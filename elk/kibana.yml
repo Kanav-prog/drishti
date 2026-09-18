@@ -1,0 +1,49 @@
+# Kibana configuration
+
+# Server settings
+server.name: kibana
+server.host: "0.0.0.0"
+server.port: 5601
+server.basePath: ""
+server.rewriteBasePath: false
+
+# Elasticsearch settings
+elasticsearch.hosts: ["http://elasticsearch:9200"]
+elasticsearch.username: "elastic"
+elasticsearch.password: "${ELASTIC_PASSWORD}"
+elasticsearch.requestTimeout: 30000
+
+# Security settings
+xpack.security.enabled: true
+
+# Monitoring
+xpack.monitoring.enabled: true
+xpack.monitoring.collection.enabled: true
+xpack.monitoring.ui.container.elasticsearch.enabled: true
+
+# Logging level
+logging.level: info
+
+# Index pattern settings
+kibana.defaultAppId: "discover"
+
+# Saved objects settings
+savedObjects.maxImportPayloadBytes: 26214400
+
+# Advanced settings
+xpack.reporting.enabled: true
+xpack.reporting.roles.enabled: true
+
+# Session timeout (30 minutes)
+xpack.security.session.idleTimeout: 1800000
+xpack.security.session.lifespan: 2592000000
+
+# Telemetry
+telemetry.enabled: false
+telemetry.banner: false
+
+# Spaces
+xpack.spaces.enabled: true
+
+# Canvas
+canvas.enabled: true

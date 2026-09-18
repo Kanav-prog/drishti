@@ -1,0 +1,11 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Just copy the necessary math/physics backend codes
+COPY backend/devops/telemetry_producer.py ./backend/devops/telemetry_producer.py
+
+# Await Redis readiness and spin up the Physics producer
+CMD ["python", "backend/devops/telemetry_producer.py"]

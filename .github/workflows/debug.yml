@@ -1,0 +1,21 @@
+name: 🐛 Debug EC2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_IP || '44.216.1.62' }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/drishti
+            echo "=== DOCKER PS ==="
+            docker ps -a
+            echo "=== DOCKER LOGS ==="
+            docker logs drishti-api --tail 100

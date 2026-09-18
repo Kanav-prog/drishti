@@ -1,0 +1,61 @@
+# APM Server configuration
+
+apm-server:
+  # Listening address and port
+  host: "0.0.0.0:8200"
+  
+  # Enable CORS for web applications
+  cors:
+    enabled: true
+    allow_origins: ['*']
+  
+  # Authorization
+  auth:
+    anonymous:
+      enabled: true
+      allow_agent: ['']
+      allow_service: ['']
+
+  # Aggregation settings
+  aggregation:
+    enabled: true
+
+  # Maximum event queue limit
+  max_event_size: 307200
+  
+  # Request rate limiting
+  request_limit: '10mb'
+
+# Elasticsearch output
+output.elasticsearch:
+  enabled: true
+  hosts: ['elasticsearch:9200']
+  username: elastic
+  password: "${ELASTIC_PASSWORD}"
+  index: 'apm-drishti-%{+yyyy.MM.dd}'
+  bulk:
+    flush_interval: 1s
+
+# Logging
+logging.level: info
+logging.to_stderr: false
+logging.to_files: true
+logging.files:
+  path: /var/log/apm-server
+  name: apm-server
+  keepfiles: 7
+  permissions: 0644
+
+# Agent configurations
+agents:
+  config:
+    enabled: true
+    cache:
+      expiration: 30s
+
+# Kibana settings
+kibana:
+  enabled: true
+  host: 'kibana:5601'
+  username: 'elastic'
+  password: "${ELASTIC_PASSWORD}"

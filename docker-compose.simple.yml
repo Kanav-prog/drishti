@@ -1,0 +1,112 @@
+version: '3.8'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DRISHTI — Production Docker Compose
+# 3 services: Redis (pubsub) + API (FastAPI) + Frontend (Nginx)
+#
+# USAGE:
+#   Prereq:  python scripts/generate_graph.py && python backend/data/osint_engine.py
+#            cd frontend && npm run build && cd ..
+#   Start:   docker compose -f docker-compose.simple.yml up --build
+#   Stop:    docker compose -f docker-compose.simple.yml down
+#   Logs:    docker compose -f docker-compose.simple.yml logs -f
+#   Shell:   docker compose -f docker-compose.simple.yml exec drishti-api bash
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Redis: Pub/Sub backbone for WebSocket broadcast ───────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: drishti-redis
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ── FastAPI Backend: Intelligence Engine + REST + WebSocket ───────────────
+  drishti-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: drishti-api
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: production
+      REDIS_URL: redis://redis:6379/0
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      STREAMING_BACKEND: ${STREAMING_BACKEND:-mock}
+      SIMULATION_TICK_SECONDS: ${SIMULATION_TICK_SECONDS:-5}
+      CASCADE_DECAY_RATE: ${CASCADE_DECAY_RATE:-0.15}
+      SIGNATURE_MATCH_THRESHOLD: ${SIGNATURE_MATCH_THRESHOLD:-40}
+      UVICORN_WORKERS: 1
+    volumes:
+      # Serve pre-built network graph (generated before docker build)
+      - ./frontend/public/network_graph.json:/app/frontend/public/network_graph.json:ro
+      - ./crs_corpus.json:/app/crs_corpus.json:ro
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/api/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  # ── Nginx: Serves React SPA + Reverse-proxies API + WebSocket ─────────────
+  drishti-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: drishti-frontend
+    depends_on:
+      drishti-api:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/drishti.conf:ro
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ─────────────────────────────────────────────────────────────────────────────
+volumes:
+  redis_data:
+    name: drishti_redis_data
+
+networks:
+  default:
+    name: drishti_network
+    driver: bridge

@@ -1,0 +1,176 @@
+# DRISHTI Helm Values
+# Deploy across Indian Railway zones with zone-specific configuration
+
+# Global settings
+global:
+  environment: production
+  region: "ZONE_NAME"  # e.g., ZONE_01_MUMBAI, ZONE_02_DELHI
+  domain: drishti.ir.gov.in
+
+# Image configuration
+image:
+  repository: docker.io/drishti/api
+  tag: "3.0.0"
+  pullPolicy: IfNotPresent
+
+# Replica configuration
+replicaCount: 3
+
+# Resource allocation per pod
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+# Autoscaling
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# Streaming configuration
+streaming:
+  backend: "kafka"  # or "redis"
+  batchSize: 100
+  maxWorkers: 4
+  batchTimeoutSec: 60
+  inferenceTimeoutSec: 30
+
+# Kafka configuration (if backend: kafka)
+kafka:
+  enabled: true
+  brokers:
+    - kafka-broker-0.kafka-broker-headless.drishti.svc.cluster.local:9092
+    - kafka-broker-1.kafka-broker-headless.drishti.svc.cluster.local:9092
+    - kafka-broker-2.kafka-broker-headless.drishti.svc.cluster.local:9092
+  topic: "ntes-train-updates"
+  consumerGroup: "drishti-inference-zone"
+  timeoutMs: 5000
+
+# Redis configuration (if backend: redis)
+redis:
+  enabled: false
+  host: localhost
+  port: 6379
+  streamKey: "ntes:train:updates"
+
+# Database (PostgreSQL) for audit logs
+database:
+  enabled: true
+  host: postgres-service.drishti.svc.cluster.local
+  port: 5432
+  name: drishti
+  username: drishti
+  # password: set via secret
+  maxConnections: 20
+  maxIdleConnections: 5
+
+# Monitoring
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    interval: 30s
+  metrics:
+    enabled: true
+    path: /metrics
+
+# Logging
+logging:
+  level: INFO
+  format: json
+  outputs:
+    - stdout
+    - file
+  auditLogFile: /data/drishti_alerts.jsonl
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+  hosts:
+    - host: drishti.ir.gov.in
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: drishti-tls
+      hosts:
+        - drishti.ir.gov.in
+
+# Service configuration
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8000
+  sessionAffinity: ClientIP
+
+# Persistence
+persistence:
+  enabled: true
+  storageClassName: standard
+  accessMode: ReadWriteMany
+  size: 50Gi
+  mountPath: /data
+
+# Network policies
+networkPolicy:
+  enabled: true
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: drishti
+      ports:
+      - protocol: TCP
+        port: 8000
+
+# Pod security
+podSecurityPolicy:
+  enabled: true
+  runAsNonRoot: true
+  runAsUser: 1000
+  readOnlyRootFilesystem: false
+  allowPrivilegeEscalation: false
+
+# Resource quotas per zone
+resourceQuota:
+  enabled: true
+  requests:
+    cpu: "20"
+    memory: "40Gi"
+  limits:
+    cpu: "30"
+    memory: "60Gi"
+
+# Node selectors for zone-specific deployment
+nodeSelector:
+  zone: "CURRENT_ZONE"  # Set per deployment
+
+# Tolerations for zone-specific taints
+tolerations: []
+
+# Affinity rules
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - drishti-api
+          topologyKey: kubernetes.io/hostname

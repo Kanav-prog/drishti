@@ -1,0 +1,11 @@
+date,station_code,station_name,deaths,injuries,train_type,primary_cause,secondary_causes,weather,time_of_day,section_type,pre_accident_delays_minutes
+2023-06-02,BLSR,Balasore,296,432,Passenger,signal_misconfiguration,maintenance_failure,Clear,Night,Double-track,45
+1998-06-02,FZD,Firozabad,212,300,Express,signal_failure,dense_fog,Fog,Night,Single-track,38
+1984-12-03,BPL,Bhopal,105,213,Passenger,track_defect,maintenance_overdue,Rain,Night,Double-track,32
+2005-07-22,NGP,Nagpur,78,156,Express,brake_failure,track_defect,Clear,Day,Double-track,18
+1997-03-10,MAS,Chennai,43,92,Passenger,human_error,fatigue,Cloudy,Night,Single-track,25
+1999-08-15,NDLS,New Delhi,89,134,Express,signal_failure,power_outage,Clear,Morning,Double-track,42
+2010-11-28,HWH,Howrah,156,287,Passenger,track_defect,maintenance_failure,Fog,Night,Double-track,55
+2002-04-06,BOM,Mumbai,67,123,Express,collision,speed_excess,Rain,Evening,Double-track,29
+1995-09-12,ALD,Allahabad,34,68,Passenger,signal_failure,operator_error,Clear,Afternoon,Single-track,15
+2008-05-30,AGC,Agra,45,87,Express,track_defect,maintenance_overdue,Heat,Day,Double-track,33

@@ -1,0 +1,1336 @@
+{
+  "metadata": {
+    "total_nodes": 51,
+    "total_edges": 62,
+    "generated": "2026-04-01",
+    "description": "DRISHTI Layer 1: Indian Railways betweenness centrality graph",
+    "top_risk_node": "NDLS"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "NDLS",
+        "name": "New Delhi",
+        "zone": "NR",
+        "lat": 28.6431,
+        "lng": 77.2197,
+        "centrality": 1.0,
+        "accident_count": 3,
+        "accident_deaths": 47,
+        "risk_rank": 1,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "HWH",
+        "name": "Howrah Jn",
+        "zone": "ER",
+        "lat": 22.5958,
+        "lng": 88.3017,
+        "centrality": 0.94,
+        "accident_count": 4,
+        "accident_deaths": 89,
+        "risk_rank": 2,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": "Howrah Gate Crash",
+        "signature_date": "1999-04-28",
+        "signature_deaths": 45
+      },
+      {
+        "id": "BOMBAY",
+        "name": "Mumbai Central",
+        "zone": "WR",
+        "lat": 18.9719,
+        "lng": 72.8188,
+        "centrality": 0.92,
+        "accident_count": 1,
+        "accident_deaths": 38,
+        "risk_rank": 3,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": "Mumbai Flood Derail",
+        "signature_date": "2005-03-10",
+        "signature_deaths": 38
+      },
+      {
+        "id": "MAS",
+        "name": "Chennai Central",
+        "zone": "SR",
+        "lat": 13.0288,
+        "lng": 80.1859,
+        "centrality": 0.88,
+        "accident_count": 2,
+        "accident_deaths": 54,
+        "risk_rank": 4,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "DLI",
+        "name": "Delhi Junction",
+        "zone": "NR",
+        "lat": 28.5921,
+        "lng": 77.227,
+        "centrality": 0.82,
+        "accident_count": 2,
+        "accident_deaths": 28,
+        "risk_rank": 5,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "SC",
+        "name": "Secunderabad",
+        "zone": "SCR",
+        "lat": 17.4337,
+        "lng": 78.5016,
+        "centrality": 0.81,
+        "accident_count": 2,
+        "accident_deaths": 130,
+        "risk_rank": 6,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": "Secunderabad Collision",
+        "signature_date": "2003-01-17",
+        "signature_deaths": 130
+      },
+      {
+        "id": "BZA",
+        "name": "Vijayawada Jn",
+        "zone": "SCR",
+        "lat": 16.5062,
+        "lng": 80.648,
+        "centrality": 0.8,
+        "accident_count": 2,
+        "accident_deaths": 72,
+        "risk_rank": 7,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": "Vijayawada Derailment",
+        "signature_date": "2008-05-20",
+        "signature_deaths": 72
+      },
+      {
+        "id": "ALD",
+        "name": "Prayagraj Jn",
+        "zone": "NR",
+        "lat": 25.4246,
+        "lng": 81.841,
+        "centrality": 0.78,
+        "accident_count": 4,
+        "accident_deaths": 89,
+        "risk_rank": 8,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": "Prayagraj Collision",
+        "signature_date": "2001-03-14",
+        "signature_deaths": 67
+      },
+      {
+        "id": "SBC",
+        "name": "Bangalore City",
+        "zone": "SR",
+        "lat": 12.9565,
+        "lng": 77.596,
+        "centrality": 0.76,
+        "accident_count": 1,
+        "accident_deaths": 33,
+        "risk_rank": 9,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "NGP",
+        "name": "Nagpur",
+        "zone": "CR",
+        "lat": 21.146,
+        "lng": 79.0882,
+        "centrality": 0.75,
+        "accident_count": 3,
+        "accident_deaths": 67,
+        "risk_rank": 10,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": "Nagpur Derailment",
+        "signature_date": "2017-08-19",
+        "signature_deaths": 24
+      },
+      {
+        "id": "HRN",
+        "name": "Hazrat Nizamuddin",
+        "zone": "NR",
+        "lat": 28.5633,
+        "lng": 77.2522,
+        "centrality": 0.73,
+        "accident_count": 1,
+        "accident_deaths": 0,
+        "risk_rank": 11,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "ADI",
+        "name": "Ahmedabad Jn",
+        "zone": "WR",
+        "lat": 23.0225,
+        "lng": 72.5714,
+        "centrality": 0.73,
+        "accident_count": 2,
+        "accident_deaths": 44,
+        "risk_rank": 12,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "BPL",
+        "name": "Bhopal Jn",
+        "zone": "CR",
+        "lat": 23.1815,
+        "lng": 77.4104,
+        "centrality": 0.72,
+        "accident_count": 2,
+        "accident_deaths": 105,
+        "risk_rank": 13,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": "Bhopal Derailment",
+        "signature_date": "1984-12-03",
+        "signature_deaths": 105
+      },
+      {
+        "id": "LKO",
+        "name": "Lucknow",
+        "zone": "NR",
+        "lat": 26.839,
+        "lng": 80.9333,
+        "centrality": 0.71,
+        "accident_count": 2,
+        "accident_deaths": 31,
+        "risk_rank": 14,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "MGS",
+        "name": "Mughal Sarai",
+        "zone": "ECR",
+        "lat": 25.2819,
+        "lng": 83.1199,
+        "centrality": 0.71,
+        "accident_count": 2,
+        "accident_deaths": 55,
+        "risk_rank": 15,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "CNB",
+        "name": "Kanpur Central",
+        "zone": "NR",
+        "lat": 26.4499,
+        "lng": 80.3319,
+        "centrality": 0.69,
+        "accident_count": 3,
+        "accident_deaths": 52,
+        "risk_rank": 16,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "ET",
+        "name": "Itarsi Jn",
+        "zone": "CR",
+        "lat": 22.1879,
+        "lng": 77.6889,
+        "centrality": 0.69,
+        "accident_count": 1,
+        "accident_deaths": 22,
+        "risk_rank": 17,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "BRC",
+        "name": "Vadodara Jn",
+        "zone": "WR",
+        "lat": 22.3143,
+        "lng": 73.1939,
+        "centrality": 0.68,
+        "accident_count": 1,
+        "accident_deaths": 19,
+        "risk_rank": 18,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "KGP",
+        "name": "Kharagpur Jn",
+        "zone": "ER",
+        "lat": 22.3396,
+        "lng": 87.3204,
+        "centrality": 0.67,
+        "accident_count": 2,
+        "accident_deaths": 41,
+        "risk_rank": 19,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "JHS",
+        "name": "Jhansi Jn",
+        "zone": "NR",
+        "lat": 25.4464,
+        "lng": 78.5953,
+        "centrality": 0.65,
+        "accident_count": 1,
+        "accident_deaths": 18,
+        "risk_rank": 20,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "VSKP",
+        "name": "Visakhapatnam",
+        "zone": "SCR",
+        "lat": 17.6907,
+        "lng": 83.2179,
+        "centrality": 0.65,
+        "accident_count": 1,
+        "accident_deaths": 27,
+        "risk_rank": 21,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "PNBE",
+        "name": "Patna Jn",
+        "zone": "ECR",
+        "lat": 25.6022,
+        "lng": 85.1376,
+        "centrality": 0.64,
+        "accident_count": 2,
+        "accident_deaths": 38,
+        "risk_rank": 22,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": "Patna Head-On",
+        "signature_date": "2006-11-09",
+        "signature_deaths": 35
+      },
+      {
+        "id": "JP",
+        "name": "Jaipur Jn",
+        "zone": "NWR",
+        "lat": 26.9124,
+        "lng": 75.7873,
+        "centrality": 0.63,
+        "accident_count": 1,
+        "accident_deaths": 22,
+        "risk_rank": 23,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "BLSR",
+        "name": "Balasore",
+        "zone": "ER",
+        "lat": 21.4942,
+        "lng": 86.9289,
+        "centrality": 0.62,
+        "accident_count": 3,
+        "accident_deaths": 296,
+        "risk_rank": 24,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": "Balasore (Coromandel)",
+        "signature_date": "2023-06-02",
+        "signature_deaths": 296
+      },
+      {
+        "id": "DADAR",
+        "name": "Dadar",
+        "zone": "WR",
+        "lat": 18.9819,
+        "lng": 72.8288,
+        "centrality": 0.61,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 25,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "BSP",
+        "name": "Bilaspur Jn",
+        "zone": "SER",
+        "lat": 22.0797,
+        "lng": 82.1409,
+        "centrality": 0.61,
+        "accident_count": 1,
+        "accident_deaths": 31,
+        "risk_rank": 26,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "PUNE",
+        "name": "Pune Jn",
+        "zone": "CR",
+        "lat": 18.5204,
+        "lng": 73.8567,
+        "centrality": 0.58,
+        "accident_count": 1,
+        "accident_deaths": 58,
+        "risk_rank": 27,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "TATA",
+        "name": "Tatanagar Jn",
+        "zone": "SER",
+        "lat": 22.772,
+        "lng": 86.2081,
+        "centrality": 0.58,
+        "accident_count": 1,
+        "accident_deaths": 23,
+        "risk_rank": 28,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "GKP",
+        "name": "Gorakhpur Jn",
+        "zone": "NER",
+        "lat": 26.7604,
+        "lng": 83.3732,
+        "centrality": 0.57,
+        "accident_count": 2,
+        "accident_deaths": 43,
+        "risk_rank": 29,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "ASN",
+        "name": "Asansol Jn",
+        "zone": "ER",
+        "lat": 23.685,
+        "lng": 86.9768,
+        "centrality": 0.56,
+        "accident_count": 2,
+        "accident_deaths": 35,
+        "risk_rank": 30,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "BBS",
+        "name": "Bhubaneswar",
+        "zone": "ER",
+        "lat": 20.25,
+        "lng": 85.83,
+        "centrality": 0.54,
+        "accident_count": 1,
+        "accident_deaths": 22,
+        "risk_rank": 31,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "GHY",
+        "name": "Guwahati",
+        "zone": "NFR",
+        "lat": 26.1445,
+        "lng": 91.7362,
+        "centrality": 0.54,
+        "accident_count": 1,
+        "accident_deaths": 19,
+        "risk_rank": 32,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "RJY",
+        "name": "Rajahmundry",
+        "zone": "SCR",
+        "lat": 16.9891,
+        "lng": 81.7866,
+        "centrality": 0.52,
+        "accident_count": 1,
+        "accident_deaths": 16,
+        "risk_rank": 33,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "DHN",
+        "name": "Dhanbad Jn",
+        "zone": "ECR",
+        "lat": 23.7957,
+        "lng": 86.4304,
+        "centrality": 0.52,
+        "accident_count": 1,
+        "accident_deaths": 18,
+        "risk_rank": 34,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "JBP",
+        "name": "Jabalpur",
+        "zone": "CR",
+        "lat": 23.1815,
+        "lng": 79.9864,
+        "centrality": 0.5,
+        "accident_count": 1,
+        "accident_deaths": 12,
+        "risk_rank": 35,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "AII",
+        "name": "Ajmer Jn",
+        "zone": "NWR",
+        "lat": 26.4552,
+        "lng": 74.629,
+        "centrality": 0.5,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 36,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "CT",
+        "name": "Cuttack",
+        "zone": "ER",
+        "lat": 20.4628,
+        "lng": 85.883,
+        "centrality": 0.49,
+        "accident_count": 1,
+        "accident_deaths": 15,
+        "risk_rank": 37,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "ROU",
+        "name": "Rourkela",
+        "zone": "SER",
+        "lat": 22.2511,
+        "lng": 84.8582,
+        "centrality": 0.49,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 38,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "AGC",
+        "name": "Agra Cantt",
+        "zone": "NR",
+        "lat": 27.1767,
+        "lng": 78.0059,
+        "centrality": 0.48,
+        "accident_count": 1,
+        "accident_deaths": 14,
+        "risk_rank": 39,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "ED",
+        "name": "Erode Jn",
+        "zone": "SR",
+        "lat": 11.341,
+        "lng": 77.7172,
+        "centrality": 0.48,
+        "accident_count": 1,
+        "accident_deaths": 8,
+        "risk_rank": 40,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "GNT",
+        "name": "Guntur Jn",
+        "zone": "SCR",
+        "lat": 16.2963,
+        "lng": 80.4376,
+        "centrality": 0.45,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 41,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "SALEM",
+        "name": "Salem Jn",
+        "zone": "SR",
+        "lat": 11.6643,
+        "lng": 78.1461,
+        "centrality": 0.44,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 42,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "LJN",
+        "name": "Lucknow NE",
+        "zone": "NER",
+        "lat": 26.8578,
+        "lng": 80.9204,
+        "centrality": 0.44,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 43,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "FZD",
+        "name": "Firozabad",
+        "zone": "NR",
+        "lat": 27.1506,
+        "lng": 78.3717,
+        "centrality": 0.42,
+        "accident_count": 2,
+        "accident_deaths": 212,
+        "risk_rank": 44,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": "Firozabad",
+        "signature_date": "1998-06-02",
+        "signature_deaths": 212
+      },
+      {
+        "id": "RATLAM",
+        "name": "Ratlam Jn",
+        "zone": "WR",
+        "lat": 23.3304,
+        "lng": 75.0394,
+        "centrality": 0.42,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 45,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "JU",
+        "name": "Jodhpur Jn",
+        "zone": "NWR",
+        "lat": 26.2389,
+        "lng": 73.0243,
+        "centrality": 0.42,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 46,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "GWL",
+        "name": "Gwalior",
+        "zone": "NR",
+        "lat": 26.2183,
+        "lng": 78.1749,
+        "centrality": 0.39,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 47,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "BINA",
+        "name": "Bina Jn",
+        "zone": "CR",
+        "lat": 23.6069,
+        "lng": 78.8242,
+        "centrality": 0.39,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 48,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "PURI",
+        "name": "Puri",
+        "zone": "ECoR",
+        "lat": 19.8104,
+        "lng": 85.83,
+        "centrality": 0.33,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 49,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "MYSORE",
+        "name": "Mysuru Jn",
+        "zone": "SR",
+        "lat": 12.2958,
+        "lng": 76.6394,
+        "centrality": 0.32,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 50,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      },
+      {
+        "id": "DBRG",
+        "name": "Dibrugarh",
+        "zone": "NFR",
+        "lat": 27.4848,
+        "lng": 95.0088,
+        "centrality": 0.28,
+        "accident_count": 0,
+        "accident_deaths": 0,
+        "risk_rank": 51,
+        "stress_level": "LOW",
+        "delay_minutes": 0,
+        "cascade_risk": 0.0,
+        "signature_match_pct": 0,
+        "signature_accident_name": null,
+        "signature_date": null,
+        "signature_deaths": 0
+      }
+    ],
+    "links": [
+      {
+        "source": "NDLS",
+        "target": "DLI",
+        "weight": 0.95
+      },
+      {
+        "source": "NDLS",
+        "target": "HRN",
+        "weight": 0.88
+      },
+      {
+        "source": "NDLS",
+        "target": "AGC",
+        "weight": 0.75
+      },
+      {
+        "source": "DLI",
+        "target": "LKO",
+        "weight": 0.7
+      },
+      {
+        "source": "HRN",
+        "target": "AGC",
+        "weight": 0.72
+      },
+      {
+        "source": "AGC",
+        "target": "JHS",
+        "weight": 0.6
+      },
+      {
+        "source": "JHS",
+        "target": "BPL",
+        "weight": 0.65
+      },
+      {
+        "source": "BPL",
+        "target": "ET",
+        "weight": 0.68
+      },
+      {
+        "source": "ET",
+        "target": "NGP",
+        "weight": 0.72
+      },
+      {
+        "source": "LKO",
+        "target": "CNB",
+        "weight": 0.75
+      },
+      {
+        "source": "CNB",
+        "target": "ALD",
+        "weight": 0.78
+      },
+      {
+        "source": "ALD",
+        "target": "MGS",
+        "weight": 0.8
+      },
+      {
+        "source": "MGS",
+        "target": "PNBE",
+        "weight": 0.72
+      },
+      {
+        "source": "CNB",
+        "target": "FZD",
+        "weight": 0.42
+      },
+      {
+        "source": "FZD",
+        "target": "AGC",
+        "weight": 0.45
+      },
+      {
+        "source": "AGC",
+        "target": "GWL",
+        "weight": 0.38
+      },
+      {
+        "source": "HWH",
+        "target": "KGP",
+        "weight": 0.85
+      },
+      {
+        "source": "KGP",
+        "target": "TATA",
+        "weight": 0.6
+      },
+      {
+        "source": "TATA",
+        "target": "ROU",
+        "weight": 0.52
+      },
+      {
+        "source": "ROU",
+        "target": "BSP",
+        "weight": 0.58
+      },
+      {
+        "source": "BSP",
+        "target": "NGP",
+        "weight": 0.65
+      },
+      {
+        "source": "HWH",
+        "target": "ASN",
+        "weight": 0.7
+      },
+      {
+        "source": "ASN",
+        "target": "DHN",
+        "weight": 0.55
+      },
+      {
+        "source": "BLSR",
+        "target": "BBS",
+        "weight": 0.62
+      },
+      {
+        "source": "BBS",
+        "target": "CT",
+        "weight": 0.58
+      },
+      {
+        "source": "CT",
+        "target": "PURI",
+        "weight": 0.32
+      },
+      {
+        "source": "BOMBAY",
+        "target": "DADAR",
+        "weight": 0.9
+      },
+      {
+        "source": "DADAR",
+        "target": "PUNE",
+        "weight": 0.82
+      },
+      {
+        "source": "PUNE",
+        "target": "NGP",
+        "weight": 0.6
+      },
+      {
+        "source": "BOMBAY",
+        "target": "BRC",
+        "weight": 0.78
+      },
+      {
+        "source": "BRC",
+        "target": "ADI",
+        "weight": 0.75
+      },
+      {
+        "source": "ADI",
+        "target": "RATLAM",
+        "weight": 0.45
+      },
+      {
+        "source": "RATLAM",
+        "target": "BPL",
+        "weight": 0.48
+      },
+      {
+        "source": "RATLAM",
+        "target": "JP",
+        "weight": 0.5
+      },
+      {
+        "source": "MAS",
+        "target": "BZA",
+        "weight": 0.82
+      },
+      {
+        "source": "BZA",
+        "target": "SC",
+        "weight": 0.78
+      },
+      {
+        "source": "SC",
+        "target": "SBC",
+        "weight": 0.72
+      },
+      {
+        "source": "SBC",
+        "target": "MYSORE",
+        "weight": 0.38
+      },
+      {
+        "source": "SBC",
+        "target": "SALEM",
+        "weight": 0.42
+      },
+      {
+        "source": "SALEM",
+        "target": "ED",
+        "weight": 0.46
+      },
+      {
+        "source": "ED",
+        "target": "MAS",
+        "weight": 0.55
+      },
+      {
+        "source": "BZA",
+        "target": "RJY",
+        "weight": 0.58
+      },
+      {
+        "source": "RJY",
+        "target": "VSKP",
+        "weight": 0.62
+      },
+      {
+        "source": "VSKP",
+        "target": "BBS",
+        "weight": 0.6
+      },
+      {
+        "source": "MAS",
+        "target": "GNT",
+        "weight": 0.52
+      },
+      {
+        "source": "GNT",
+        "target": "BZA",
+        "weight": 0.65
+      },
+      {
+        "source": "SC",
+        "target": "GNT",
+        "weight": 0.5
+      },
+      {
+        "source": "ET",
+        "target": "JBP",
+        "weight": 0.48
+      },
+      {
+        "source": "JBP",
+        "target": "NGP",
+        "weight": 0.52
+      },
+      {
+        "source": "BINA",
+        "target": "JBP",
+        "weight": 0.38
+      },
+      {
+        "source": "BPL",
+        "target": "BINA",
+        "weight": 0.42
+      },
+      {
+        "source": "ALD",
+        "target": "GKP",
+        "weight": 0.58
+      },
+      {
+        "source": "GKP",
+        "target": "LJN",
+        "weight": 0.42
+      },
+      {
+        "source": "LJN",
+        "target": "LKO",
+        "weight": 0.45
+      },
+      {
+        "source": "PNBE",
+        "target": "GKP",
+        "weight": 0.52
+      },
+      {
+        "source": "PNBE",
+        "target": "DHN",
+        "weight": 0.55
+      },
+      {
+        "source": "MGS",
+        "target": "JBP",
+        "weight": 0.45
+      },
+      {
+        "source": "NDLS",
+        "target": "JP",
+        "weight": 0.65
+      },
+      {
+        "source": "JP",
+        "target": "AII",
+        "weight": 0.52
+      },
+      {
+        "source": "AII",
+        "target": "JU",
+        "weight": 0.42
+      },
+      {
+        "source": "GHY",
+        "target": "DBRG",
+        "weight": 0.3
+      },
+      {
+        "source": "BBS",
+        "target": "PURI",
+        "weight": 0.35
+      }
+    ]
+  },
+  "crs_signatures": {
+    "BLSR": {
+      "name": "Balasore (Coromandel)",
+      "date": "2023-06-02",
+      "deaths": 296,
+      "match_factors": [
+        "signal_failure",
+        "loop_line",
+        "high_density"
+      ]
+    },
+    "FZD": {
+      "name": "Firozabad",
+      "date": "1998-06-02",
+      "deaths": 212,
+      "match_factors": [
+        "signal_failure",
+        "goods_train_collision"
+      ]
+    },
+    "BPL": {
+      "name": "Bhopal Derailment",
+      "date": "1984-12-03",
+      "deaths": 105,
+      "match_factors": [
+        "track_buckle",
+        "deferred_maintenance"
+      ]
+    },
+    "SC": {
+      "name": "Secunderabad Collision",
+      "date": "2003-01-17",
+      "deaths": 130,
+      "match_factors": [
+        "signal_pass",
+        "high_speed"
+      ]
+    },
+    "HWH": {
+      "name": "Howrah Gate Crash",
+      "date": "1999-04-28",
+      "deaths": 45,
+      "match_factors": [
+        "brake_failure",
+        "overload"
+      ]
+    },
+    "BOMBAY": {
+      "name": "Mumbai Flood Derail",
+      "date": "2005-03-10",
+      "deaths": 38,
+      "match_factors": [
+        "track_flood",
+        "visibility"
+      ]
+    },
+    "BZA": {
+      "name": "Vijayawada Derailment",
+      "date": "2008-05-20",
+      "deaths": 72,
+      "match_factors": [
+        "worn_track",
+        "speed_excess"
+      ]
+    },
+    "PNBE": {
+      "name": "Patna Head-On",
+      "date": "2006-11-09",
+      "deaths": 35,
+      "match_factors": [
+        "signal_failure",
+        "fog"
+      ]
+    },
+    "NGP": {
+      "name": "Nagpur Derailment",
+      "date": "2017-08-19",
+      "deaths": 24,
+      "match_factors": [
+        "track_defect",
+        "monsoon"
+      ]
+    },
+    "ALD": {
+      "name": "Prayagraj Collision",
+      "date": "2001-03-14",
+      "deaths": 67,
+      "match_factors": [
+        "signal_failure",
+        "bridge"
+      ]
+    }
+  }
+}

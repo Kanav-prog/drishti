@@ -1,0 +1,112 @@
+[project]
+name = "drishti"
+version = "1.0.0"
+description = "India's Railway Cascade Risk & Operations Intelligence System"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "404Avinash", email = "avinash@example.com" }
+]
+keywords = ["indian-railways", "cascade-intelligence", "network-analysis", "fastapi"]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Ruff: Fast Python linter + formatter (replaces flake8 + black + isort)
+# ─────────────────────────────────────────────────────────────────────────────
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "node_modules",
+    "frontend",
+    ".pytest_cache",
+    "notebooks",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes (undefined names, unused imports)
+    "W",   # pycodestyle warnings
+    "I",   # isort (import order)
+    "N",   # pep8 naming
+    "UP",  # pyupgrade (modernise syntax)
+    "B",   # bugbear (common bugs)
+    "C4",  # flake8-comprehensions
+    "SIM", # simplify
+]
+ignore = [
+    "E501",  # Line too long (handled by formatter)
+    "N802",  # Function name lowercase (we use camelCase in some API models)
+    "N806",  # Variable name lowercase
+    "B008",  # Do not perform function calls in default arguments (FastAPI does this)
+    "SIM108",# Ternary operator (personal preference)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*"      = ["N", "S101"]  # Assertions are fine in tests
+"notebooks/*"  = ["ALL"]        # Don't lint notebooks
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Pytest
+# ─────────────────────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+testpaths     = ["tests"]
+asyncio_mode  = "auto"
+python_files  = ["test_*.py", "*_test.py"]
+python_classes= ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+    "--no-header",
+    "-ra",             # Show summary of all non-passing tests
+]
+markers = [
+    "slow: marks tests as slow (deselect with -m 'not slow')",
+    "integration: marks integration tests requiring live services",
+    "network: marks tests requiring network access",
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Coverage
+# ─────────────────────────────────────────────────────────────────────────────
+[tool.coverage.run]
+source = ["backend"]
+omit = [
+    "backend/data/osint_engine.py",  # Depends on live network
+    "*/__init__.py",
+    "*/migrations/*",
+]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 40          # Minimum 40% coverage to pass CI (raise as tests grow)
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "pass",
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Mypy (optional type checking)
+# ─────────────────────────────────────────────────────────────────────────────
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+no_strict_optional = true
+warn_return_any = false
+warn_unused_ignores = true
+exclude = ["tests/", "notebooks/", "frontend/"]

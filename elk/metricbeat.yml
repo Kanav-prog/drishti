@@ -1,0 +1,81 @@
+metricbeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+metricbeat.modules:
+  # System module (CPU, memory, disk)
+  - module: system
+    period: 60s
+    metricsets:
+      - cpu
+      - load
+      - memory
+      - network
+      - process
+      - process_summary
+      - disk
+      - diskio
+      - fsstat
+    processes: ['drishti', 'python', 'java']
+    include_top_n:
+      by_cpu: 5
+      by_memory: 5
+
+  # Docker module
+  - module: docker
+    period: 30s
+    enabled: true
+    metricsets:
+      - container
+      - cpu
+      - diskio
+      - healthcheck
+      - info
+      - memory
+      - network
+    hosts: ["unix:///var/run/docker.sock"]
+    hostfs: "/"
+
+  # Elasticsearch module
+  - module: elasticsearch
+    period: 30s
+    enabled: true
+    hosts: ["elasticsearch:9200"]
+    username: "elastic"
+    password: "${ELASTIC_PASSWORD}"
+    metricsets:
+      - ccr
+      - enrich
+      - index
+      - ingest
+      - ml_job
+      - node
+      - shard
+
+processors:
+  - add_docker_metadata:
+      host: "unix:///var/run/docker.sock"
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_fields:
+      target: ''
+      fields:
+        service.name: drishti
+        environment: production
+
+output.elasticsearch:
+  enabled: true
+  hosts: ["elasticsearch:9200"]
+  username: "elastic"
+  password: "${ELASTIC_PASSWORD}"
+  index: "metricbeat-drishti-%{+yyyy.MM.dd}"
+
+logging.level: info
+logging.to_stderr: false
+logging.to_files: true
+logging.files:
+  path: /var/log/metricbeat
+  name: metricbeat
+  keepfiles: 7
+  permissions: 0644

@@ -1,0 +1,73 @@
+# Markdown documentation (included; excluded selectively below)
+# *.md files tracked unless in: node_modules, build, dist, .venv, etc.
+
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node
+node_modules/
+
+# Testing and logs
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# Data files (optional - keep or exclude based on size)
+*.jsonl
+# Exclude JSON files generally, but include specific files
+*.json
+!crs_corpus.json
+!frontend/package.json
+!frontend/package-lock.json
+!frontend/public/network_graph.json
+!package.json
+!package-lock.json
+
+# Large data files - use Git LFS or download separately
+*.h5
+*.npz
+
+# Temporary files
+*.tmp
+.env
+.env.local
+
+# Local databases
+*.db
+*.sqlite
+
+# Demo/test outputs
+test_*.jsonl
+demo_*.jsonl
+streaming_results.jsonl

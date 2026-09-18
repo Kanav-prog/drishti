@@ -1,0 +1,702 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: drishti
+
+---
+# CONFIGURATION
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: drishti-config
+  namespace: drishti
+data:
+  STREAMING_BACKEND: "kafka"
+  KAFKA_BROKERS: "kafka-broker-0.kafka-broker-headless.drishti.svc.cluster.local:9092"
+  KAFKA_TOPIC: "ntes-train-updates"
+  BATCH_SIZE: "100"
+  MAX_WORKERS: "4"
+  LOG_LEVEL: "INFO"
+  NTES_API_URL: "https://enquiry.indianrail.gov.in/ntes/"
+  JUNCTIONS_MONITORED: "75"
+  UPDATE_FREQUENCY: "30"
+  MODEL_PATH: "/data/ml_model_state.json"
+  PREDICTION_WINDOW: "72"
+
+---
+# SECRETS
+apiVersion: v1
+kind: Secret
+metadata:
+  name: drishti-secrets
+  namespace: drishti
+type: Opaque
+stringData:
+  DB_USER: drishti
+  DB_PASSWORD: drishti-secure-2026
+  DB_HOST: postgres-service.drishti.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: drishti
+  EMAIL_FROM: alerts@drishti.railway.gov.in
+  EMAIL_PASSWORD: drishti-secure-2026
+  SMS_API_KEY: drishti-sms-key-2026
+
+---
+# PERSISTENT VOLUME CLAIM
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: drishti-data-pvc
+  namespace: drishti
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: standard
+
+---
+# ============================================================================
+# NTES STREAMER DEPLOYMENT
+# ============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ntes-streamer
+  namespace: drishti
+  labels:
+    app: ntes-streamer
+    component: streaming
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: ntes-streamer
+  template:
+    metadata:
+      labels:
+        app: ntes-streamer
+        component: streaming
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: ntes-streamer
+        image: drishti:latest
+        imagePullPolicy: Always
+        
+        command: ["python", "-m", "backend.data.osint_ntes_streamer"]
+        
+        ports:
+        - name: http
+          containerPort: 8001
+          protocol: TCP
+        
+        env:
+        - name: COMPONENT
+          value: "ntes-streamer"
+        - name: NTES_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: drishti-config
+              key: NTES_API_URL
+        - name: JUNCTIONS_MONITORED
+          valueFrom:
+            configMapKeyRef:
+              name: drishti-config
+              key: JUNCTIONS_MONITORED
+        - name: UPDATE_FREQUENCY
+          valueFrom:
+            configMapKeyRef:
+              name: drishti-config
+              key: UPDATE_FREQUENCY
+        - name: KAFKA_BROKERS
+          valueFrom:
+            configMapKeyRef:
+              name: drishti-config
+              key: KAFKA_BROKERS
+        
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "pgrep -f 'ntes_streamer' && echo 'alive' || exit 1"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "[ -f /data/ntes_stream.pid ] && echo 'ready' || exit 1"
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+      
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: drishti-data-pvc
+      
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - ntes-streamer
+              topologyKey: kubernetes.io/hostname
+      
+      terminationGracePeriodSeconds: 30
+
+---
+# NTES STREAMER SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: ntes-streamer-service
+  namespace: drishti
+  labels:
+    app: ntes-streamer
+spec:
+  type: ClusterIP
+  selector:
+    app: ntes-streamer
+  ports:
+  - name: http
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+
+---
+# ============================================================================
+# ML ENSEMBLE DEPLOYMENT
+# ============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-ensemble
+  namespace: drishti
+  labels:
+    app: ml-ensemble
+    component: ml
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: ml-ensemble
+  template:
+    metadata:
+      labels:
+        app: ml-ensemble
+        component: ml
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8002"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: ml-ensemble
+        image: drishti:latest
+        imagePullPolicy: Always
+        
+        command: ["python", "-m", "train_ml_ensemble"]
+        
+        ports:
+        - name: http
+          containerPort: 8002
+          protocol: TCP
+        
+        env:
+        - name: COMPONENT
+          value: "ml-ensemble"
+        - name: MODEL_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: drishti-config
+              key: MODEL_PATH
+        - name: PREDICTION_WINDOW
+          valueFrom:
+            configMapKeyRef:
+              name: drishti-config
+              key: PREDICTION_WINDOW
+        - name: NTES_SERVICE
+          value: "http://ntes-streamer-service.drishti.svc.cluster.local:8001"
+        
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "[ -f /data/ml_model_state.json ] && echo 'alive' || exit 1"
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "[ -f /data/ml_ready ] && echo 'ready' || exit 1"
+          initialDelaySeconds: 45
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 2
+        
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+      
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: drishti-data-pvc
+      
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - ml-ensemble
+              topologyKey: kubernetes.io/hostname
+      
+      terminationGracePeriodSeconds: 30
+
+---
+# ML ENSEMBLE SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-ensemble-service
+  namespace: drishti
+  labels:
+    app: ml-ensemble
+spec:
+  type: ClusterIP
+  selector:
+    app: ml-ensemble
+  ports:
+  - name: http
+    port: 8002
+    targetPort: 8002
+    protocol: TCP
+
+---
+# ============================================================================
+# ALERT ENGINE DEPLOYMENT
+# ============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alert-engine
+  namespace: drishti
+  labels:
+    app: alert-engine
+    component: alerts
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: alert-engine
+  template:
+    metadata:
+      labels:
+        app: alert-engine
+        component: alerts
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8003"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: alert-engine
+        image: drishti:latest
+        imagePullPolicy: Always
+        
+        command: ["python", "-m", "backend.alerts.engine"]
+        
+        ports:
+        - name: http
+          containerPort: 8003
+          protocol: TCP
+        
+        env:
+        - name: COMPONENT
+          value: "alert-engine"
+        - name: NTES_SERVICE
+          value: "http://ntes-streamer-service.drishti.svc.cluster.local:8001"
+        - name: ML_SERVICE
+          value: "http://ml-ensemble-service.drishti.svc.cluster.local:8002"
+        - name: EMAIL_FROM
+          valueFrom:
+            secretKeyRef:
+              name: drishti-secrets
+              key: EMAIL_FROM
+        - name: SMS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: drishti-secrets
+              key: SMS_API_KEY
+        envFrom:
+        - configMapRef:
+            name: drishti-config
+        - secretRef:
+            name: drishti-secrets
+        
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "pgrep -f 'alert_engine' && echo 'alive' || exit 1"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8003
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+      
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: drishti-data-pvc
+      
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - alert-engine
+              topologyKey: kubernetes.io/hostname
+      
+      terminationGracePeriodSeconds: 30
+
+---
+# ALERT ENGINE SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: alert-engine-service
+  namespace: drishti
+  labels:
+    app: alert-engine
+spec:
+  type: ClusterIP
+  selector:
+    app: alert-engine
+  ports:
+  - name: http
+    port: 8003
+    targetPort: 8003
+    protocol: TCP
+
+---
+# ============================================================================
+# MAIN API DEPLOYMENT
+# ============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drishti-api
+  namespace: drishti
+  labels:
+    app: drishti-api
+    component: api
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: drishti-api
+  template:
+    metadata:
+      labels:
+        app: drishti-api
+        component: api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - drishti-api
+                topologyKey: kubernetes.io/hostname
+      
+      containers:
+      - name: drishti-api
+        image: drishti:latest
+        imagePullPolicy: Always
+        
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        
+        envFrom:
+        - configMapRef:
+            name: drishti-config
+        - secretRef:
+            name: drishti-secrets
+        
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+        
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+      
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: drishti-data-pvc
+      
+      terminationGracePeriodSeconds: 30
+
+---
+# DRISHTI API SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: drishti-api-service
+  namespace: drishti
+  labels:
+    app: drishti-api
+spec:
+  type: LoadBalancer
+  selector:
+    app: drishti-api
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8000
+    protocol: TCP
+  sessionAffinity: ClientIP
+
+---
+# DASHBOARD SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: drishti-dashboard
+  namespace: drishti
+  labels:
+    app: drishti-dashboard
+spec:
+  type: LoadBalancer
+  selector:
+    app: drishti-api
+  ports:
+  - name: dashboard
+    port: 3000
+    targetPort: 3000
+    protocol: TCP
+
+---
+# AUTO-SCALING API
+apiVersion: autoscaling.k8s.io/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: drishti-api-hpa
+  namespace: drishti
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: drishti-api
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+# AUTO-SCALING NTES STREAMER
+apiVersion: autoscaling.k8s.io/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ntes-streamer-hpa
+  namespace: drishti
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ntes-streamer
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+
+---
+# AUTO-SCALING ML ENSEMBLE
+apiVersion: autoscaling.k8s.io/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ml-ensemble-hpa
+  namespace: drishti
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ml-ensemble
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 85

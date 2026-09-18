@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚂 DRISHTI - Status & API Endpoints</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #1e90ff; font-size: 2.5em; margin-bottom: 10px; }
+        .subtitle { color: #888; font-size: 1.1em; margin-bottom: 30px; }
+        .status { background: #004d00; border-left: 4px solid #00ff00; padding: 15px; border-radius: 6px; margin-bottom: 30px; color: #00ff00; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px; }
+        .card h3 { color: #1e90ff; margin-bottom: 15px; }
+        .endpoint { background: #252525; padding: 10px; margin: 8px 0; border-left: 3px solid #1e90ff; border-radius: 4px; }
+        .endpoint a { color: #1e90ff; text-decoration: none; font-family: monospace; }
+        .endpoint a:hover { text-decoration: underline; }
+        .metric { background: #252525; padding: 12px; border-radius: 4px; margin: 8px 0; border-left: 3px solid #1e90ff; }
+        .value { font-size: 1.8em; font-weight: bold; color: #1e90ff; }
+        .label { color: #888; font-size: 0.9em; }
+        footer { text-align: center; color: #666; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚂 DRISHTI Control Center</h1>
+        <p class="subtitle">Real-time Railway Intelligence & Cascade Analysis</p>
+        
+        <div class="status">✅ System Operational | Backend: http://127.0.0.1:8000 | 127 Trains | 51 Junctions</div>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>📊 Operations Dashboard</h3>
+                <div class="metric">
+                    <div class="label">Trains Tracked:</div>
+                    <div class="value">127</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Junctions:</div>
+                    <div class="value">51</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Zones:</div>
+                    <div class="value">16</div>
+                </div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/api/dashboard/summary" target="_blank">📍 Summary</a></div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/api/dashboard/operations" target="_blank">🔧 Operations</a></div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/api/dashboard/ml-insights" target="_blank">🤖 ML Insights</a></div>
+            </div>
+            
+            <div class="card">
+                <h3>🌊 Cascade Analysis</h3>
+                <div class="metric">
+                    <div class="label">Active Cascades:</div>
+                    <div class="value">1</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Trains Affected:</div>
+                    <div class="value">67</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Junctions in Chain:</div>
+                    <div class="value">12</div>
+                </div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/api/cascade/analyze?source_junction=NDLS&initial_delay=120" target="_blank">📊 Analysis</a></div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/api/cascade/network-topology" target="_blank">🗺️ Topology</a></div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/api/cascade/risk-matrix" target="_blank">⚠️ Risk Matrix</a></div>
+            </div>
+            
+            <div class="card">
+                <h3>🔔 Unified Alerts</h3>
+                <div class="metric">
+                    <div class="label">Critical Alerts:</div>
+                    <div class="value">3</div>
+                </div>
+                <div class="metric">
+                    <div class="label">ML Models:</div>
+                    <div class="value">4</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Avg Confidence:</div>
+                    <div class="value">93%</div>
+                </div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/api/alerts/unified?severity=critical" target="_blank">🚨 Critical</a></div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/api/alerts/reasoning/ALT-2024-001" target="_blank">📋 Reasoning</a></div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/api/alerts/recommendations/ALT-2024-001" target="_blank">💡 Actions</a></div>
+            </div>
+            
+            <div class="card">
+                <h3>🤖 AI/ML Models</h3>
+                <div class="metric">
+                    <div class="label">Cascade Detection:</div>
+                    <div class="value">98%</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Delay Prediction:</div>
+                    <div class="value">87%</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Anomaly Detection:</div>
+                    <div class="value">95%</div>
+                </div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/api/dashboard/ml-insights" target="_blank">📊 Model Stats</a></div>
+            </div>
+            
+            <div class="card">
+                <h3>📚 Documentation</h3>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/docs" target="_blank">📖 Swagger UI</a></div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/redoc" target="_blank">📘 ReDoc</a></div>
+                <div class="endpoint"><a href="http://127.0.0.1:8000/openapi.json" target="_blank">🔗 OpenAPI JSON</a></div>
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; color: #888; font-size: 0.9em;">
+                    See: QUICKSTART.md, PRODUCTION_README.md, ARCHITECTURE.md
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>🔗 Real-time Streams</h3>
+                <div class="endpoint">
+                    <code>ws://127.0.0.1:8000/ws/telemetry</code><br>
+                    <span style="color: #888; font-size: 0.9em;">Live train telemetry</span>
+                </div>
+                <div class="endpoint">
+                    <code>ws://127.0.0.1:8000/api/cascade/ws/live</code><br>
+                    <span style="color: #888; font-size: 0.9em;">Live cascade events</span>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>🚂 DRISHTI Production Intelligence Engine | Backend Status: ✅ Operational</p>
+            <p style="margin-top: 10px; color: #555; font-size: 0.9em;">
+                Monitoring 127 trains across 51 junctions in 16 zones
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

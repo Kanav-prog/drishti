@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DRISHTI — Real-time Railway Safety Intelligence</title>
+<meta name="description" content="DRISHTI: AI-powered real-time railway accident prevention system monitoring 50,000+ trains across Indian Railways.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #05091a; --bg2: #080e20; --bg3: #0c1428;
+  --card: rgba(255,255,255,0.035); --card-h: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.07); --border-b: rgba(255,255,255,0.14);
+  --t1: #f0f4ff; --t2: #8b9fc0; --t3: #4a5568;
+  --blue: #3b82f6; --blue-g: rgba(59,130,246,0.25);
+  --red: #ef4444; --red-g: rgba(239,68,68,0.14); --red-b: rgba(239,68,68,0.4);
+  --orange: #f97316; --orange-g: rgba(249,115,22,0.12); --orange-b: rgba(249,115,22,0.35);
+  --yellow: #eab308; --yellow-g: rgba(234,179,8,0.10); --yellow-b: rgba(234,179,8,0.3);
+  --green: #22c55e; --green-g: rgba(34,197,94,0.10); --green-b: rgba(34,197,94,0.3);
+  --purple: #a855f7;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);display:flex;flex-direction:column}
+
+/* Ambient glows */
+body::before{content:'';position:fixed;top:-300px;left:-200px;width:700px;height:700px;
+  background:radial-gradient(circle,rgba(59,130,246,0.07) 0%,transparent 65%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;bottom:-300px;right:-200px;width:700px;height:700px;
+  background:radial-gradient(circle,rgba(239,68,68,0.05) 0%,transparent 65%);pointer-events:none;z-index:0}
+
+/* ── HEADER ─────────────────────────────────────────── */
+.hdr{background:rgba(5,9,26,0.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);
+  padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:100;position:relative}
+
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 24px rgba(59,130,246,0.45)}
+.logo h1{font-size:1.35rem;font-weight:900;background:linear-gradient(135deg,#60a5fa,#a5b4fc);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:3px}
+.logo p{font-size:0.6rem;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+
+.hdr-right{display:flex;align-items:center;gap:12px}
+.live-pill{display:flex;align-items:center;gap:6px;background:rgba(34,197,94,0.1);
+  border:1px solid rgba(34,197,94,0.3);padding:5px 12px;border-radius:20px;font-size:0.72rem;font-weight:700;color:var(--green)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+  animation:pulse-g 1.4s ease-in-out infinite}
+@keyframes pulse-g{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.5)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+
+.ws-pill{font-size:0.68rem;padding:4px 10px;border-radius:12px;border:1px solid var(--border);color:var(--t3);transition:.3s}
+.ws-pill.ok{color:var(--green);border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.08)}
+.ws-pill.err{color:var(--red);border-color:var(--red-b)}
+
+.sound-btn{background:var(--card);border:1px solid var(--border);color:var(--t2);
+  padding:5px 11px;border-radius:8px;font-size:0.7rem;cursor:pointer;transition:.2s;font-family:'Inter',sans-serif}
+.sound-btn:hover{border-color:var(--border-b);color:var(--t1)}
+
+/* ── METRICS ROW ─────────────────────────────────────── */
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:12px 20px;flex-shrink:0;position:relative;z-index:1}
+.mc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;
+  position:relative;overflow:hidden;transition:.25s;cursor:default}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--acc,var(--blue))}
+.mc:hover{background:var(--card-h);border-color:var(--border-b);transform:translateY(-2px)}
+.mc.c1{--acc:var(--blue)}.mc.c2{--acc:var(--red)}.mc.c3{--acc:var(--orange)}.mc.c4{--acc:var(--purple)}.mc.c5{--acc:var(--yellow)}
+
+.mc-lbl{font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);margin-bottom:7px}
+.mc-val{font-size:2rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;transition:.3s}
+.mc.c2 .mc-val{color:var(--red)}.mc.c3 .mc-val{color:var(--orange)}.mc.c4 .mc-val{color:var(--purple)}.mc.c5 .mc-val{color:var(--yellow)}
+.mc-sub{font-size:0.65rem;color:var(--t3);margin-top:5px}
+
+/* ── MAIN GRID ────────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:340px 1fr 300px;gap:12px;padding:0 20px 10px;flex:1;min-height:0;position:relative;z-index:1}
+
+/* ── PANELS ──────────────────────────────────────────── */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.ph{padding:11px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;
+  justify-content:space-between;background:rgba(255,255,255,0.015);flex-shrink:0}
+.ph-title{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--t2)}
+.ph-badge{font-size:0.65rem;padding:3px 8px;border-radius:6px;font-weight:600;border:1px solid}
+
+/* ── ALERT FEED ──────────────────────────────────────── */
+#feed{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;min-height:0}
+#feed::-webkit-scrollbar{width:3px}
+#feed::-webkit-scrollbar-thumb{background:var(--border-b);border-radius:2px}
+
+.ac{border-radius:9px;padding:11px 13px;border-left:3px solid;animation:slideIn .35s cubic-bezier(.16,1,.3,1);cursor:pointer;transition:.2s}
+.ac:hover{filter:brightness(1.2)}
+@keyframes slideIn{from{transform:translateX(16px);opacity:0}to{transform:translateX(0);opacity:1}}
+.ac.CRITICAL{background:var(--red-g);border-color:var(--red);animation:slideIn .35s cubic-bezier(.16,1,.3,1),glow 2s ease .35s 3}
+.ac.HIGH{background:var(--orange-g);border-color:var(--orange)}
+.ac.MEDIUM{background:var(--yellow-g);border-color:var(--yellow)}
+.ac.LOW{background:var(--green-g);border-color:var(--green)}
+@keyframes glow{0%,100%{box-shadow:0 0 10px rgba(239,68,68,.08)}50%{box-shadow:0 0 22px rgba(239,68,68,.4)}}
+
+.ac-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.ac-train{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:600}
+.chip{font-size:0.62rem;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.3px;border:1px solid}
+.chip.CRITICAL{background:rgba(239,68,68,.22);color:#fca5a5;border-color:rgba(239,68,68,.5)}
+.chip.HIGH{background:rgba(249,115,22,.18);color:#fdba74;border-color:rgba(249,115,22,.4)}
+.chip.MEDIUM{background:rgba(234,179,8,.15);color:#fde047;border-color:rgba(234,179,8,.35)}
+.chip.LOW{background:rgba(34,197,94,.12);color:#86efac;border-color:rgba(34,197,94,.3)}
+
+.ac-stn{font-size:0.7rem;color:var(--t2);margin-bottom:4px}
+.ac-exp{font-size:0.68rem;color:var(--t3);line-height:1.4}
+.ac-foot{display:flex;justify-content:space-between;margin-top:5px}
+.ac-risk{font-family:'JetBrains Mono',monospace;font-size:0.63rem;color:var(--t3)}
+.ac-time{font-size:0.6rem;color:var(--t3)}
+
+/* ── CENTER ──────────────────────────────────────────── */
+.center-col{display:flex;flex-direction:column;gap:12px;min-height:0}
+.train-panel{flex:1;min-height:0}
+#tgrid{padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:7px;
+  overflow-y:auto;height:calc(100% - 46px)}
+#tgrid::-webkit-scrollbar{width:3px}
+#tgrid::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.tt{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:9px;
+  padding:9px;transition:.25s;position:relative;overflow:hidden;cursor:default}
+.tt::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--tc,var(--t3));transition:.3s}
+.tt:hover{background:var(--card-h);border-color:var(--border-b);transform:scale(1.03)}
+.tt.CRITICAL{--tc:var(--red);border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.05)}
+.tt.HIGH{--tc:var(--orange);border-color:rgba(249,115,22,.25)}
+.tt.MEDIUM{--tc:var(--yellow);border-color:rgba(234,179,8,.2)}
+.tt.LOW{--tc:var(--green)}
+
+.tt-no{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:var(--t1)}
+.tt-stn{font-size:0.6rem;color:var(--t3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt-r{font-size:0.7rem;font-weight:700;margin-top:5px;font-family:'JetBrains Mono',monospace}
+.tt-r.CRITICAL{color:var(--red)}.tt-r.HIGH{color:var(--orange)}.tt-r.MEDIUM{color:var(--yellow)}.tt-r.LOW{color:var(--green)}.tt-r.SAFE{color:var(--t3)}
+
+.zone-panel{flex:0 0 auto}
+#zones{padding:6px 14px;display:flex;flex-direction:column;gap:0;overflow:auto;max-height:180px}
+.zi{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.zi:last-child{border-bottom:none}
+.zi-name{font-size:0.7rem;color:var(--t2)}
+.zi-bars{display:flex;gap:4px;align-items:center}
+.zi-bar{height:14px;min-width:4px;border-radius:2px;transition:.5s}
+.zi-total{font-size:0.65rem;font-family:'JetBrains Mono',monospace;color:var(--t3);min-width:22px;text-align:right}
+
+/* ── RIGHT COL ────────────────────────────────────────── */
+.right-col{display:flex;flex-direction:column;gap:12px;min-height:0}
+.chart-wrap{padding:14px;flex:1;min-height:0;position:relative}
+.info-grid{padding:14px;display:flex;flex-direction:column;gap:9px;flex-shrink:0}
+.info-row{display:flex;justify-content:space-between;align-items:center}
+.info-lbl{font-size:0.66rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
+.info-val{font-size:0.7rem;font-family:'JetBrains Mono',monospace;color:var(--t2)}
+.info-val.ok{color:var(--green);font-weight:600}.info-val.blue{color:var(--blue)}
+
+/* ── TOAST ───────────────────────────────────────────── */
+#toasts{position:fixed;top:72px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px;max-width:300px}
+.toast{background:rgba(10,15,30,0.95);border:1px solid var(--red-b);border-radius:10px;
+  padding:12px 15px;animation:toastIn .4s cubic-bezier(.16,1,.3,1);backdrop-filter:blur(16px);
+  box-shadow:0 8px 32px rgba(239,68,68,0.25)}
+@keyframes toastIn{from{transform:translateX(80px);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast-t{font-weight:700;font-size:0.78rem;color:var(--red);margin-bottom:3px}
+.toast-b{font-size:0.68rem;color:var(--t2);line-height:1.4}
+
+/* ── TICKER ──────────────────────────────────────────── */
+.ticker{background:rgba(5,9,26,0.95);border-top:1px solid var(--border);padding:6px 20px;
+  flex-shrink:0;overflow:hidden;height:30px}
+.ticker-wrap{display:flex;animation:tick 40s linear infinite;white-space:nowrap}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{font-size:0.65rem;font-family:'JetBrains Mono',monospace;color:var(--t3);margin-right:60px}
+.tc{color:var(--red);font-weight:600}.th{color:var(--orange)}.tm{color:var(--yellow)}.tl{color:var(--green)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-icon">🚆</div>
+    <div>
+      <h1>DRISHTI</h1>
+      <p>AI-Powered Railway Safety Intelligence · Indian Railways</p>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <button class="sound-btn" id="sndBtn" onclick="toggleSound()">🔔 Sound</button>
+    <div class="live-pill"><div class="live-dot"></div>LIVE</div>
+    <div class="ws-pill err" id="wsStatus">● Connecting…</div>
+  </div>
+</header>
+
+<!-- METRICS -->
+<div class="metrics">
+  <div class="mc c1">
+    <div class="mc-lbl">Total Alerts</div>
+    <div class="mc-val" id="mTotal">0</div>
+    <div class="mc-sub">All severity levels</div>
+  </div>
+  <div class="mc c2">
+    <div class="mc-lbl">🔴 Critical</div>
+    <div class="mc-val" id="mCrit">0</div>
+    <div class="mc-sub">Immediate action</div>
+  </div>
+  <div class="mc c3">
+    <div class="mc-lbl">🟠 High Risk</div>
+    <div class="mc-val" id="mHigh">0</div>
+    <div class="mc-sub">Elevated danger</div>
+  </div>
+  <div class="mc c4">
+    <div class="mc-lbl">🚄 Trains Tracked</div>
+    <div class="mc-val" id="mTrains">0</div>
+    <div class="mc-sub">Active nationwide</div>
+  </div>
+  <div class="mc c5">
+    <div class="mc-lbl">⚡ Batches Run</div>
+    <div class="mc-val" id="mBatch">0</div>
+    <div class="mc-sub">Inference cycles</div>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="grid">
+
+  <!-- LEFT: Alert Feed -->
+  <div class="panel">
+    <div class="ph">
+      <span class="ph-title">⚡ Live Alert Feed</span>
+      <span class="ph-badge" id="feedBadge" style="color:#60a5fa;border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.1)">0 alerts</span>
+    </div>
+    <div id="feed">
+      <div style="text-align:center;padding:50px 20px;color:var(--t3);font-size:.8rem">
+        <div style="font-size:2.5rem;margin-bottom:12px">🛰️</div>
+        Connecting to inference engine…
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center-col">
+    <!-- Train Grid -->
+    <div class="panel train-panel">
+      <div class="ph">
+        <span class="ph-title">🚂 Train Status Monitor</span>
+        <span class="ph-badge" id="tCount" style="color:#c084fc;border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.1)">0 active</span>
+      </div>
+      <div id="tgrid"></div>
+    </div>
+    <!-- Zone Status -->
+    <div class="panel zone-panel">
+      <div class="ph">
+        <span class="ph-title">🗺️ Railway Zone Alerts</span>
+      </div>
+      <div id="zones"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-col">
+    <!-- Donut -->
+    <div class="panel" style="flex:0 0 auto">
+      <div class="ph"><span class="ph-title">📊 Severity Distribution</span></div>
+      <div class="chart-wrap" style="height:210px">
+        <canvas id="donut"></canvas>
+      </div>
+    </div>
+    <!-- Bar -->
+    <div class="panel" style="flex:1;min-height:0">
+      <div class="ph"><span class="ph-title">📈 Alert Timeline</span></div>
+      <div class="chart-wrap">
+        <canvas id="bars"></canvas>
+      </div>
+    </div>
+    <!-- Info -->
+    <div class="panel" style="flex:0 0 auto">
+      <div class="info-grid">
+        <div class="info-row"><span class="info-lbl">API Version</span><span class="info-val blue">v4.0</span></div>
+        <div class="info-row"><span class="info-lbl">Inference Engine</span><span class="info-val ok">ONLINE</span></div>
+        <div class="info-row"><span class="info-lbl">ML Models</span><span class="info-val">Bayesian · IF · DBSCAN</span></div>
+        <div class="info-row"><span class="info-lbl">Station Coverage</span><span class="info-val">7,000+</span></div>
+        <div class="info-row"><span class="info-lbl">Uptime</span><span class="info-val" id="uptime">00:00:00</span></div>
+        <div class="info-row"><span class="info-lbl">WebSocket Clients</span><span class="info-val" id="wsClients">–</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-wrap" id="ticker"><span class="ticker-item">⏳ Awaiting data…</span><span class="ticker-item">⏳ Awaiting data…</span></div></div>
+
+<!-- TOASTS -->
+<div id="toasts"></div>
+
+<script>
+// ─── State ──────────────────────────────────────────────────────
+let ws, soundOn=true, startTime=Date.now();
+let feedCount=0, trainMap={}, tickerItems=[];
+const MAX_FEED=60, MAX_TICKER=20;
+
+// ─── Charts ─────────────────────────────────────────────────────
+const donutChart = new Chart(document.getElementById('donut').getContext('2d'),{
+  type:'doughnut',
+  data:{labels:['Critical','High','Medium','Low'],
+    datasets:[{data:[0,0,0,0],
+      backgroundColor:['rgba(239,68,68,.75)','rgba(249,115,22,.75)','rgba(234,179,8,.75)','rgba(34,197,94,.75)'],
+      borderColor:['#ef4444','#f97316','#eab308','#22c55e'],borderWidth:2,hoverOffset:8}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+    plugins:{legend:{position:'bottom',labels:{color:'#8b9fc0',padding:10,font:{size:10,family:'Inter'},boxWidth:9,boxHeight:9}}}}
+});
+
+const barsData={labels:[],datasets:[
+  {label:'Critical',data:[],backgroundColor:'rgba(239,68,68,.7)',borderColor:'#ef4444',borderWidth:1,borderRadius:3,stack:'a'},
+  {label:'High',data:[],backgroundColor:'rgba(249,115,22,.6)',borderColor:'#f97316',borderWidth:1,borderRadius:3,stack:'a'},
+  {label:'Medium',data:[],backgroundColor:'rgba(234,179,8,.5)',borderColor:'#eab308',borderWidth:1,borderRadius:3,stack:'a'},
+]};
+const barsChart = new Chart(document.getElementById('bars').getContext('2d'),{
+  type:'bar',data:barsData,
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5568',font:{size:8}}},
+            y:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5568',font:{size:8},stepSize:1}}},
+    plugins:{legend:{labels:{color:'#8b9fc0',font:{size:9},boxWidth:8,boxHeight:8}}}}
+});
+
+let buckets=[], currentBucket={label:'',c:0,h:0,m:0}, lastMin=-1;
+function pushBucket(sv){
+  const now=new Date(), min=now.getMinutes();
+  if(min!==lastMin){
+    if(currentBucket.label) buckets.push({...currentBucket});
+    currentBucket={label:now.toTimeString().slice(0,5),c:0,h:0,m:0};
+    lastMin=min;
+    if(buckets.length>12) buckets.shift();
+  }
+  if(sv==='CRITICAL') currentBucket.c++;
+  else if(sv==='HIGH') currentBucket.h++;
+  else if(sv==='MEDIUM') currentBucket.m++;
+  const all=[...buckets,currentBucket];
+  barsData.labels=all.map(b=>b.label);
+  barsData.datasets[0].data=all.map(b=>b.c);
+  barsData.datasets[1].data=all.map(b=>b.h);
+  barsData.datasets[2].data=all.map(b=>b.m);
+  barsChart.update('none');
+}
+
+// ─── Counter animation ──────────────────────────────────────────
+function animNum(id,v){
+  const el=document.getElementById(id);
+  const old=parseInt(el.textContent.replace(/,/g,''))||0;
+  if(old===v) return;
+  const d=v-old,dur=400,s=performance.now();
+  (function step(now){
+    const p=Math.min((now-s)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(old+d*e).toLocaleString();
+    if(p<1) requestAnimationFrame(step);
+  })(performance.now());
+}
+
+function updateStats(st){
+  animNum('mTotal',st.total||0);
+  animNum('mCrit',st.critical||0);
+  animNum('mHigh',st.high||0);
+  animNum('mTrains',st.trains_monitored||0);
+  animNum('mBatch',st.batches_processed||0);
+  donutChart.data.datasets[0].data=[st.critical||0,st.high||0,st.medium||0,st.low||0];
+  donutChart.update('none');
+  if(st.connections!==undefined) document.getElementById('wsClients').textContent=st.connections;
+}
+
+// ─── Alert Feed ─────────────────────────────────────────────────
+function addToFeed(a,animate=true){
+  feedCount++;
+  document.getElementById('feedBadge').textContent=feedCount+' alerts';
+  const feed=document.getElementById('feed');
+  const empty=feed.querySelector('[data-empty]');
+  if(empty) empty.remove();
+  const t=new Date(a.timestamp);
+  const timeStr=t.toTimeString().slice(0,8);
+  const el=document.createElement('div');
+  el.className='ac '+a.severity;
+  if(!animate) el.style.animation='none';
+  el.innerHTML=`
+    <div class="ac-top">
+      <span class="ac-train">🚆 ${a.train_id} · ${a.train_name}</span>
+      <span class="chip ${a.severity}">${a.severity}</span>
+    </div>
+    <div class="ac-stn">📍 ${a.station_name} (${a.station_code}) · Zone: ${a.zone||'–'}</div>
+    <div class="ac-exp">${a.explanation.substring(0,110)}${a.explanation.length>110?'…':''}</div>
+    <div class="ac-foot">
+      <span class="ac-risk">Risk: ${a.risk_score}% · ${a.methods_agreeing}/4 models</span>
+      <span class="ac-time">${timeStr}</span>
+    </div>`;
+  feed.insertBefore(el,feed.firstChild);
+  while(feed.children.length>MAX_FEED) feed.removeChild(feed.lastChild);
+}
+
+// ─── Train Grid ─────────────────────────────────────────────────
+function updateTrainGrid(a){
+  trainMap[a.train_id]={...a};
+  document.getElementById('tCount').textContent=Object.keys(trainMap).length+' active';
+  const grid=document.getElementById('tgrid');
+  let tile=grid.querySelector(`[data-tid="${a.train_id}"]`);
+  if(!tile){
+    tile=document.createElement('div');
+    tile.dataset.tid=a.train_id;
+    grid.insertBefore(tile,grid.firstChild);
+  }
+  tile.className='tt '+a.severity;
+  tile.innerHTML=`
+    <div class="tt-no">${a.train_id}</div>
+    <div class="tt-stn" title="${a.station_name}">${a.station_code}</div>
+    <div class="tt-r ${a.severity}">⬤ ${a.risk_score}%</div>`;
+}
+
+// ─── Zone list ──────────────────────────────────────────────────
+let zoneData={};
+function updateZones(zones){
+  if(!zones) return;
+  zoneData=zones;
+  const el=document.getElementById('zones');
+  el.innerHTML='';
+  const entries=Object.entries(zones).sort((a,b)=>b[1].total-a[1].total);
+  entries.forEach(([z,v])=>{
+    const row=document.createElement('div');
+    row.className='zi';
+    const cW=Math.max(v.critical*6,v.critical?4:0);
+    const hW=Math.max(v.high*4,v.high?4:0);
+    const mW=Math.max(v.medium*3,v.medium?4:0);
+    row.innerHTML=`
+      <span class="zi-name">${z}</span>
+      <div class="zi-bars">
+        ${cW?`<div class="zi-bar" style="width:${cW}px;background:var(--red)" title="${v.critical} critical"></div>`:''}
+        ${hW?`<div class="zi-bar" style="width:${hW}px;background:var(--orange)"></div>`:''}
+        ${mW?`<div class="zi-bar" style="width:${mW}px;background:var(--yellow)"></div>`:''}
+        <span class="zi-total">${v.total}</span>
+      </div>`;
+    el.appendChild(row);
+  });
+}
+
+// ─── Ticker ─────────────────────────────────────────────────────
+function addTicker(a){
+  const cls=a.severity==='CRITICAL'?'tc':a.severity==='HIGH'?'th':a.severity==='MEDIUM'?'tm':'tl';
+  const item=document.createElement('span');
+  item.className='ticker-item';
+  item.innerHTML=`<span class="${cls}">[${a.severity}]</span> Train ${a.train_id} @ ${a.station_code} — Risk ${a.risk_score}% `;
+  tickerItems.push(a);
+  if(tickerItems.length>MAX_TICKER) tickerItems.shift();
+  const wrap=document.getElementById('ticker');
+  wrap.innerHTML='';
+  const doubled=[...tickerItems,...tickerItems];
+  doubled.forEach(t=>{
+    const cls2=t.severity==='CRITICAL'?'tc':t.severity==='HIGH'?'th':t.severity==='MEDIUM'?'tm':'tl';
+    const s=document.createElement('span');
+    s.className='ticker-item';
+    s.innerHTML=`<span class="${cls2}">[${t.severity}]</span> ${t.train_id} @ ${t.station_code} · ${t.risk_score}% · ${t.station_name} &nbsp;`;
+    wrap.appendChild(s);
+  });
+}
+
+// ─── Toast ──────────────────────────────────────────────────────
+function showToast(a){
+  const c=document.getElementById('toasts');
+  const t=document.createElement('div');
+  t.className='toast';
+  t.innerHTML=`<div class="toast-t">🚨 CRITICAL ALERT — Train ${a.train_id}</div>
+    <div class="toast-b">${a.station_name} · Risk ${a.risk_score}%<br>${a.explanation.substring(0,90)}…</div>`;
+  c.insertBefore(t,c.firstChild);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(80px)';t.style.transition='.4s';
+    setTimeout(()=>t.remove(),400);},5000);
+  while(c.children.length>3) c.removeChild(c.lastChild);
+}
+
+// ─── Sound ──────────────────────────────────────────────────────
+let audioCtx;
+function playAlert(){
+  if(!soundOn) return;
+  try{
+    if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    [880,660,880].forEach((f,i)=>{
+      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+      o.connect(g);g.connect(audioCtx.destination);
+      o.frequency.value=f;o.type='sine';
+      g.gain.setValueAtTime(0.12,audioCtx.currentTime+i*0.15);
+      g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+i*0.15+0.12);
+      o.start(audioCtx.currentTime+i*0.15);o.stop(audioCtx.currentTime+i*0.15+0.14);
+    });
+  }catch(e){}
+}
+function toggleSound(){
+  soundOn=!soundOn;
+  document.getElementById('sndBtn').textContent=soundOn?'🔔 Sound':'🔕 Muted';
+}
+
+// ─── Uptime ─────────────────────────────────────────────────────
+setInterval(()=>{
+  const s=Math.floor((Date.now()-startTime)/1000);
+  const h=String(Math.floor(s/3600)).padStart(2,'0');
+  const m=String(Math.floor((s%3600)/60)).padStart(2,'0');
+  const sec=String(s%60).padStart(2,'0');
+  document.getElementById('uptime').textContent=`${h}:${m}:${sec}`;
+},1000);
+
+// ─── WebSocket ──────────────────────────────────────────────────
+function connect(){
+  const proto=location.protocol==='https:'?'wss:':'ws:';
+  ws=new WebSocket(`${proto}//${location.host}/ws/live`);
+  ws.onopen=()=>{
+    document.getElementById('wsStatus').textContent='● Connected';
+    document.getElementById('wsStatus').className='ws-pill ok';
+  };
+  ws.onmessage=e=>{
+    const msg=JSON.parse(e.data);
+    if(msg.type==='init'){
+      if(msg.stats) updateStats(msg.stats);
+      if(msg.zones) updateZones(msg.zones);
+      if(msg.recent_alerts?.length){
+        const rev=[...msg.recent_alerts].reverse();
+        rev.forEach(a=>{addToFeed(a,false);updateTrainGrid(a);addTicker(a)});
+      }
+    } else if(msg.type==='alert'){
+      if(msg.stats) updateStats(msg.stats);
+      if(msg.data){
+        const a=msg.data;
+        addToFeed(a,true);
+        updateTrainGrid(a);
+        pushBucket(a.severity);
+        addTicker(a);
+        if(a.severity==='CRITICAL'){showToast(a);playAlert();}
+      }
+      if(msg.stats?.zones) updateZones(msg.stats.zones);
+    }
+  };
+  ws.onclose=()=>{
+    document.getElementById('wsStatus').textContent='● Reconnecting…';
+    document.getElementById('wsStatus').className='ws-pill err';
+    setTimeout(connect,3000);
+  };
+  ws.onerror=()=>ws.close();
+}
+
+// ─── Periodic zone fetch ─────────────────────────────────────────
+setInterval(async()=>{
+  try{
+    const r=await fetch('/api/stats');
+    const d=await r.json();
+    if(d.zones) updateZones(d.zones);
+    if(d.connections!==undefined) document.getElementById('wsClients').textContent=d.connections;
+  }catch(e){}
+},10000);
+
+connect();
+</script>
+</body>
+</html>

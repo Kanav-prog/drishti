@@ -1,0 +1,32 @@
+apiVersion: v2
+name: drishti
+description: Railway accident prediction and alert system for Indian Railways
+type: application
+version: 3.0.0
+appVersion: "3.0.0"
+home: https://drishti.ir.gov.in
+sources:
+  - https://github.com/ir-drishti/drishti
+maintainers:
+  - name: Indian Railway Innovation Team
+    email: drishti@ir.gov.in
+keywords:
+  - railway
+  - safety
+  - accident-prediction
+  - machine-learning
+  - alerts
+dependencies:
+  - name: postgresql
+    version: 12.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+  - name: kafka
+    version: 18.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: kafka.enabled
+  - name: prometheus
+    version: 15.x.x
+    repository: https://prometheus-community.github.io/helm-charts
+    condition: prometheus.enabled
+icon: https://drishti.ir.gov.in/logo.png
