@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from 'recharts'
+import { API_BASE } from '../api'
 
 // ── Static model definitions — reflects ACTUAL backend implementation ─────────
 const MODELS = [
@@ -162,7 +163,7 @@ export default function Models() {
   useEffect(() => {
     const check = async () => {
       try {
-        const r = await fetch('/api/health')
+        const r = await fetch(`${API_BASE}/health`)
         setLive(r.ok)
       } catch { setLive(false) }
     }

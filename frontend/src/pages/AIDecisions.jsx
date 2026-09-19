@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { API_BASE } from '../api'
 
 const SEVERITY_COLOR = {
   CRITICAL: 'var(--red)',
@@ -266,7 +267,7 @@ export default function AIDecisions() {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch('/api/ai/decisions?limit=30')
+      const res = await fetch(`${API_BASE}/ai/decisions?limit=30`)
       if (!res.ok) throw new Error('offline')
       const json = await res.json()
       setData(json)

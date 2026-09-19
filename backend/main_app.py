@@ -247,11 +247,19 @@ async def websocket_telemetry(websocket: WebSocket):
     
     try:
         while True:
-            # In production: pull from Kafka/Redis stream
+            telemetry_data = [
+                {"id": "12301", "ratio": round(random.uniform(0.15, 0.85), 3), "severity": "LOW"},
+                {"id": "12302", "ratio": round(random.uniform(0.15, 0.85), 3), "severity": "LOW"},
+                {"id": "12841", "ratio": round(random.uniform(0.10, 0.90), 3), "severity": "HIGH"},
+                {"id": "12001", "ratio": round(random.uniform(0.20, 0.80), 3), "severity": "LOW"},
+                {"id": "12275", "ratio": round(random.uniform(0.25, 0.75), 3), "severity": "MEDIUM"},
+                {"id": "22221", "ratio": round(random.uniform(0.10, 0.80), 3), "severity": "LOW"},
+            ]
             message = {
                 "type": "telemetry",
                 "trains_updated": 47,
                 "alerts_issued": 2,
+                "data": telemetry_data,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
             }
             await websocket.send_json(message)
@@ -261,6 +269,35 @@ async def websocket_telemetry(websocket: WebSocket):
     
     except WebSocketDisconnect:
         pass
+
+# ── PILOT LIVE TRAINS ENDPOINT ────────────────────────────────────────────
+
+@app.get("/api/pilot/live-trains")
+async def get_pilot_live_trains(db: Session = Depends(get_db)):
+    """Return live running status for Howrah Pilot trains from database/telemetry."""
+    from backend.db.models import Train, TrainTelemetry
+    try:
+        trains = db.query(Train).filter(Train.is_active == True).limit(50).all()
+        results = []
+        for t in trains:
+            latest = (
+                db.query(TrainTelemetry)
+                .filter(TrainTelemetry.train_id == t.train_id)
+                .order_by(TrainTelemetry.timestamp_utc.desc())
+                .first()
+            )
+            results.append({
+                "train_no": t.train_id,
+                "train_name": t.train_name,
+                "current_station": t.current_station_code,
+                "delay_minutes": latest.delay_minutes if latest and latest.delay_minutes is not None else 0,
+                "lat": latest.latitude if latest else None,
+                "lng": latest.longitude if latest else None,
+            })
+        return {"status": "ok", "source": "database", "trains": results}
+    except Exception as exc:
+        logger.warning(f"[PILOT] Failed to fetch pilot live trains: {exc}")
+        return {"status": "error", "source": "database", "trains": [], "error": str(exc)}
 
 # ── NETWORK NODES ENDPOINT ────────────────────────────────────────────────
 

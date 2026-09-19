@@ -13,11 +13,32 @@
  *   GET /api/stats                  → { total, critical, high, medium, low, ... }
  */
 
-const BASE = '/api'
+export const API_BASE = (() => {
+  const url = import.meta.env.VITE_API_URL
+  if (!url) return '/api'
+  const trimmed = url.replace(/\/+$/, '')
+  return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`
+})()
+
+export const WS_BASE = (() => {
+  const wsUrl = import.meta.env.VITE_WS_URL
+  if (wsUrl) {
+    const trimmed = wsUrl.replace(/\/+$/, '')
+    return trimmed.endsWith('/ws') ? trimmed : `${trimmed}/ws`
+  }
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    return `${proto}//${window.location.host}/ws`
+  }
+  return 'wss://drishti-api.onrender.com/ws'
+})()
+
+const BASE = API_BASE
 
 async function _get(path) {
-  const res = await fetch(`${BASE}${path}`)
-  if (!res.ok) throw new Error(`HTTP ${res.status} ${path}`)
+  const cleanPath = path.startsWith('/') ? path : `/${path}`
+  const res = await fetch(`${BASE}${cleanPath}`)
+  if (!res.ok) throw new Error(`HTTP ${res.status} ${cleanPath}`)
   return res.json()
 }
 

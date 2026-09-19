@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { API_BASE } from '../api'
 
 // ── Navigation groups ─────────────────────────────────────────────────────────
 const GROUPS = [
@@ -108,7 +109,7 @@ export default function Navbar() {
   useEffect(() => {
     const check = async () => {
       try {
-        const res = await fetch('/api/health')
+        const res = await fetch(`${API_BASE}/health`)
         const d = await res.json()
         setConnected(d.status === 'ok' || d.status === 'healthy')
       } catch { setConnected(false) }
@@ -118,7 +119,7 @@ export default function Navbar() {
 
     const loadAlerts = async () => {
       try {
-        const res = await fetch('/api/alerts/history?limit=50')
+        const res = await fetch(`${API_BASE}/alerts/history?limit=50`)
         if (res.ok) {
           const d = await res.json()
           const arr = Array.isArray(d) ? d : (d.alerts ?? [])

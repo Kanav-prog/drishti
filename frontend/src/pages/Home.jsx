@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { API_BASE } from '../api'
 
 /* ── Particle canvas ─────────────────────────────────────────── */
 function useParticles(canvasRef) {
@@ -244,8 +245,8 @@ export default function Home() {
     const load = async () => {
       try {
         const [trainsRes, alertsRes] = await Promise.allSettled([
-          fetch('/api/trains/current'),
-          fetch('/api/alerts/history?limit=20'),
+          fetch(`${API_BASE}/trains/current`),
+          fetch(`${API_BASE}/alerts/history?limit=20`),
         ])
         let trains = [], alertArr = []
         if (trainsRes.status === 'fulfilled' && trainsRes.value.ok) trains = await trainsRes.value.json()

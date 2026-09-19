@@ -15,6 +15,7 @@ import {
   Polyline, Popup, Tooltip, useMap
 } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import { API_BASE, WS_BASE } from '../api'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ZONE DEFINITIONS
@@ -278,7 +279,7 @@ export default function HowrahPilot() {
   useEffect(() => {
     const fetchNTES = async () => {
       try {
-        const res = await fetch('/api/pilot/live-trains')
+        const res = await fetch(`${API_BASE}/pilot/live-trains`)
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const json = await res.json()
         if (json.status === 'ok' && Array.isArray(json.trains)) {
@@ -380,8 +381,7 @@ export default function HowrahPilot() {
 
   // ── WebSocket (merges server ratios if train IDs match) ─────────────────────
   useEffect(() => {
-    const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const url   = `${proto}//${window.location.host}/ws`
+    const url   = WS_BASE
     let ws, retry
 
     const connect = () => {
