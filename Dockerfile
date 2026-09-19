@@ -48,6 +48,7 @@ COPY backend/        ./backend/
 COPY scripts/        ./scripts/
 COPY data/           ./data/
 COPY models/         ./models/
+COPY scale_to_100_trains.py ./
 # Cascade logic needs the graph definition
 COPY frontend/public/network_graph.json ./frontend/public/network_graph.json
 COPY crs_corpus.json ./
@@ -69,7 +70,7 @@ HEALTHCHECK \
 EXPOSE 8000
 
 # Use exec form to handle signals properly (SIGTERM for graceful shutdown)
-CMD python -m uvicorn backend.api.server:app \
+CMD python -m uvicorn backend.main_app:app \
     --host 0.0.0.0 \
     --port ${PORT:-8000} \
     --workers ${UVICORN_WORKERS:-1} \

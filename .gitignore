@@ -53,6 +53,8 @@ htmlcov/
 !frontend/public/network_graph.json
 !package.json
 !package-lock.json
+!vercel.json
+!frontend/vercel.json
 
 # Large data files - use Git LFS or download separately
 *.h5

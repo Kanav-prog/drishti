@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 def _default_db_url() -> str:
     # Keep local development simple while supporting PostgreSQL in production.
     url = os.getenv("DATABASE_URL", "sqlite:///./drishti.db")
+    # Render PostgreSQL compatibility: SQLAlchemy 2.0 requires postgresql:// instead of postgres://
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql://", 1)
     # Log first 50 chars only (don't leak password)
     safe_url = url[:50] + "..." if len(url) > 50 else url
     logger.info(f"📊 Database URL configured: {safe_url}")

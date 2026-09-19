@@ -240,6 +240,7 @@ async def ml_insights():
 # ── REAL-TIME TELEMETRY STREAM (WebSocket) ─────────────────────────────────
 
 @app.websocket("/ws/telemetry")
+@app.websocket("/ws")
 async def websocket_telemetry(websocket: WebSocket):
     """Stream live telemetry + alerts to frontend."""
     await websocket.accept()

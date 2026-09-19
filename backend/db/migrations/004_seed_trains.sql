@@ -23,26 +23,26 @@ VALUES
 ON CONFLICT (code) DO NOTHING;
 
 -- ── Trains ───────────────────────────────────────────────────────────────────
-INSERT INTO trains (train_id, train_name, origin_station_code, destination_station_code, route, is_active, current_station_code, updated_at)
+INSERT INTO trains (train_id, train_name, origin_station_code, destination_station_code, route, is_active, current_station_code, source, updated_at)
 VALUES
-  ('12001', 'New Bhopal Shatabdi',      'NDLS', 'BPL',  'NDLS-BPL',   true, 'NDLS', CURRENT_TIMESTAMP),
-  ('12002', 'Bhopal Shatabdi',          'BPL',  'NDLS', 'BPL-NDLS',   true, 'BPL', CURRENT_TIMESTAMP),
-  ('12301', 'Howrah Rajdhani Express',  'HWH',  'NDLS', 'HWH-NDLS',   true, 'ALD', CURRENT_TIMESTAMP),
-  ('12302', 'New Delhi Rajdhani',       'NDLS', 'HWH',  'NDLS-HWH',   true, 'NGP', CURRENT_TIMESTAMP),
-  ('12309', 'Rajendra Nagar Rajdhani',  'PNBE', 'NDLS', 'PNBE-NDLS',  true, 'LKO', CURRENT_TIMESTAMP),
-  ('12622', 'Tamil Nadu SF Express',    'NDLS', 'MAS',  'NDLS-MAS',   true, 'SC', CURRENT_TIMESTAMP),
-  ('12627', 'Karnataka Express',        'NDLS', 'SBC',  'NDLS-SBC',   true, 'NGP', CURRENT_TIMESTAMP),
-  ('12723', 'Telangana Express',        'NDLS', 'SC',   'NDLS-SC',    true, 'BPL', CURRENT_TIMESTAMP),
-  ('12801', 'Purushottam SF Express',   'CSTM', 'NDLS', 'CSTM-NDLS',  true, 'NGP', CURRENT_TIMESTAMP),
-  ('12841', 'Coromandel Express',       'HWH',  'MAS',  'HWH-MAS',    true, 'BZA', CURRENT_TIMESTAMP),
-  ('12951', 'Mumbai Rajdhani Express',  'CSTM', 'NDLS', 'CSTM-NDLS',  true, 'ADI', CURRENT_TIMESTAMP),
-  ('12952', 'New Delhi Rajdhani',       'NDLS', 'CSTM', 'NDLS-CSTM',  true, 'BPL', CURRENT_TIMESTAMP),
-  ('13015', 'Kaviguru Express',         'NDLS', 'GHY',  'NDLS-GHY',   true, 'ALD', CURRENT_TIMESTAMP),
-  ('20503', 'Agartala Rajdhani',        'NDLS', 'GHY',  'NDLS-GHY',   true, 'PNBE', CURRENT_TIMESTAMP),
-  ('12275', 'Duronto Express',          'HWH',  'NDLS', 'HWH-NDLS',   true, 'HWH', CURRENT_TIMESTAMP),
-  ('12559', 'Shiv Ganga Express',       'MAS',  'NDLS', 'MAS-NDLS',   true, 'LKO', CURRENT_TIMESTAMP),
-  ('22221', 'CSMT Rajdhani Express',    'CSTM', 'NDLS', 'CSTM-NDLS',  true, 'NGP', CURRENT_TIMESTAMP),
-  ('12003', 'Lucknow Shatabdi',         'NDLS', 'LKO',  'NDLS-LKO',   true, 'NDLS', CURRENT_TIMESTAMP),
-  ('12004', 'New Delhi Shatabdi',       'LKO',  'NDLS', 'LKO-NDLS',   true, 'LKO', CURRENT_TIMESTAMP),
-  ('12423', 'Dibrugarh Rajdhani',       'NDLS', 'GHY',  'NDLS-GHY',   true, 'PNBE', CURRENT_TIMESTAMP)
+  ('12001', 'New Bhopal Shatabdi',      'NDLS', 'BPL',  'NDLS-BPL',   true, 'NDLS', 'seed', CURRENT_TIMESTAMP),
+  ('12002', 'Bhopal Shatabdi',          'BPL',  'NDLS', 'BPL-NDLS',   true, 'BPL',  'seed', CURRENT_TIMESTAMP),
+  ('12301', 'Howrah Rajdhani Express',  'HWH',  'NDLS', 'HWH-NDLS',   true, 'ALD',  'seed', CURRENT_TIMESTAMP),
+  ('12302', 'New Delhi Rajdhani',       'NDLS', 'HWH',  'NDLS-HWH',   true, 'NGP',  'seed', CURRENT_TIMESTAMP),
+  ('12309', 'Rajendra Nagar Rajdhani',  'PNBE', 'NDLS', 'PNBE-NDLS',  true, 'LKO',  'seed', CURRENT_TIMESTAMP),
+  ('12622', 'Tamil Nadu SF Express',    'NDLS', 'MAS',  'NDLS-MAS',   true, 'SC',   'seed', CURRENT_TIMESTAMP),
+  ('12627', 'Karnataka Express',        'NDLS', 'SBC',  'NDLS-SBC',   true, 'NGP',  'seed', CURRENT_TIMESTAMP),
+  ('12723', 'Telangana Express',        'NDLS', 'SC',   'NDLS-SC',    true, 'BPL',  'seed', CURRENT_TIMESTAMP),
+  ('12801', 'Purushottam SF Express',   'CSTM', 'NDLS', 'CSTM-NDLS',  true, 'NGP',  'seed', CURRENT_TIMESTAMP),
+  ('12841', 'Coromandel Express',       'HWH',  'MAS',  'HWH-MAS',    true, 'BZA',  'seed', CURRENT_TIMESTAMP),
+  ('12951', 'Mumbai Rajdhani Express',  'CSTM', 'NDLS', 'CSTM-NDLS',  true, 'ADI',  'seed', CURRENT_TIMESTAMP),
+  ('12952', 'New Delhi Rajdhani',       'NDLS', 'CSTM', 'NDLS-CSTM',  true, 'BPL',  'seed', CURRENT_TIMESTAMP),
+  ('13015', 'Kaviguru Express',         'NDLS', 'GHY',  'NDLS-GHY',   true, 'ALD',  'seed', CURRENT_TIMESTAMP),
+  ('20503', 'Agartala Rajdhani',        'NDLS', 'GHY',  'NDLS-GHY',   true, 'PNBE', 'seed', CURRENT_TIMESTAMP),
+  ('12275', 'Duronto Express',          'HWH',  'NDLS', 'HWH-NDLS',   true, 'HWH',  'seed', CURRENT_TIMESTAMP),
+  ('12559', 'Shiv Ganga Express',       'MAS',  'NDLS', 'MAS-NDLS',   true, 'LKO',  'seed', CURRENT_TIMESTAMP),
+  ('22221', 'CSMT Rajdhani Express',    'CSTM', 'NDLS', 'CSTM-NDLS',  true, 'NGP',  'seed', CURRENT_TIMESTAMP),
+  ('12003', 'Lucknow Shatabdi',         'NDLS', 'LKO',  'NDLS-LKO',   true, 'NDLS', 'seed', CURRENT_TIMESTAMP),
+  ('12004', 'New Delhi Shatabdi',       'LKO',  'NDLS', 'LKO-NDLS',   true, 'LKO',  'seed', CURRENT_TIMESTAMP),
+  ('12423', 'Dibrugarh Rajdhani',       'NDLS', 'GHY',  'NDLS-GHY',   true, 'PNBE', 'seed', CURRENT_TIMESTAMP)
 ON CONFLICT (train_id) DO NOTHING;

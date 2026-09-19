@@ -10,7 +10,7 @@ services:
       pip install -r requirements.txt
 
     startCommand: |
-      python -m uvicorn backend.api.server:app \
+      python scale_to_100_trains.py && python -m uvicorn backend.main_app:app \
         --host 0.0.0.0 \
         --port $PORT \
         --log-level info \
